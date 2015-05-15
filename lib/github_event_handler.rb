@@ -1,5 +1,15 @@
 require "json"
 
+class GithubRepository
+  def initialize(hash)
+    @data = hash
+  end
+
+  def name
+    @data["name"]
+  end
+end
+
 class GithubComment
   def initialize(comment)
     @comment = comment
@@ -75,23 +85,27 @@ class GithubIssue
 end
 
 class GithubEventHandler
-  def initialize(event)
-    @event = event
+  def initialize(data)
+    @data = data
   end
 
   def comment_created?
-    @event["action"] == "created"
+    @data["action"] == "created"
   end
 
   def comment?
-    !@event["comment"].nil?
+    !@data["comment"].nil?
   end
 
   def issue
-    GithubIssue.new(@event["issue"])
+    GithubIssue.new(@data["issue"])
   end
 
   def comment
-    GithubComment.new(@event["comment"])
+    GithubComment.new(@data["comment"])
+  end
+
+  def repository
+    @repository ||= GithubRepository.new(@data['repository'])
   end
 end
