@@ -30,7 +30,7 @@ def comment_created_message(repository, issue, comment)
     if issue.owner?(comment.user)
       message = "thinks their issue is great"
     else
-      message = "has a positive opinion on this"
+      message = "has a positive opinion about this"
     end
   end
 
