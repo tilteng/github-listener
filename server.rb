@@ -39,7 +39,7 @@ def comment_created_message(repository, issue, comment)
   end
 
   if message
-    return "#{team_name_for_project(repository)}#{issue} #{comment.user} #{message}\n```#{comment.body}```"
+    return "#{team_name_for_project(repository)}#{issue} #{comment.user} #{message}\n```#{comment.body.slice(0...100)}```"
   end
 end
 
