@@ -18,10 +18,8 @@ def comment_created_message(repository, issue, comment)
     if issue.owner?(comment.user)
       message = "wants input on their issue"
     else
-      message = "finished reviewing the issue and wants some input"
+      message = "wants input on this issue"
     end
-  elsif comment.matches?(/rebase/i)
-    message = "remember to rebase"
   elsif comment.matches?(/\+1/i)
     if issue.owner?(comment.user)
       message = "gave themselves a thumbs up"
@@ -32,10 +30,8 @@ def comment_created_message(repository, issue, comment)
     if issue.owner?(comment.user)
       message = "thinks their issue is great"
     else
-      message = "finished reviewing"
+      message = "has a positive opinion on this"
     end
-  elsif comment.matches?(/test/i)
-    message = "wants to see the tests"
   end
 
   if message
