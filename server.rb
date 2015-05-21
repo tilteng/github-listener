@@ -1,16 +1,24 @@
 require 'sinatra'
 require 'json'
+require 'github_api'
 require "./lib/slack_api"
 require "./lib/github_event_handler"
 
 SLACK_API_KEY = ENV['SLACK_API_KEY']
 SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
 
+GITHUB_API_KEY = ENV['GITHUB_API_KEY']
+
 def team_name_for_project(repository)
   "[review:#{repository.name}]"
 end
 
 get '/' do
+end
+
+def review_label!(repository, issue)
+  github = Github.new oauth_token: GITHUB_API_KEY
+  github.issues.labels.add(repository.organization, repository.name, issue.number, 'Needs Review')
 end
 
 def comment_created_message(repository, issue, comment)
@@ -32,6 +40,9 @@ def comment_created_message(repository, issue, comment)
     else
       message = "has a positive opinion about this"
     end
+  elsif comment.matches?(/review/i)
+    message = "added a Needs Review label to this issue"
+    review_label!(repository, issue)
   end
 
   if message

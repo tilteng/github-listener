@@ -1,8 +1,13 @@
+require 'httparty'
 require "json"
 
 class GithubRepository
   def initialize(hash)
     @data = hash
+  end
+
+  def organization
+    @data["full_name"].split("/")[0]
   end
 
   def name
