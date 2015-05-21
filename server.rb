@@ -40,9 +40,6 @@ def comment_created_message(repository, issue, comment)
     else
       message = "has a positive opinion about this"
     end
-  elsif comment.matches?(/review/i)
-    message = "added a Needs Review label to this issue"
-    review_label!(repository, issue)
   end
 
   if message
