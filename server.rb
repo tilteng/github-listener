@@ -28,12 +28,6 @@ def comment_created_message(repository, issue, comment)
     else
       message = "wants input on this issue"
     end
-  elsif comment.matches?(/\+1/i)
-    if issue.owner?(comment.user)
-      message = "gave themselves a thumbs up"
-    else
-      message = "thumbs up!"
-    end
   elsif comment.matches?(/lgtm/i)
     if issue.owner?(comment.user)
       message = "thinks their issue is great"
