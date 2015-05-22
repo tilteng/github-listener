@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'redis'
 require 'sinatra'
 require 'json'
@@ -10,11 +12,21 @@ SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
 REDISCLOUD_URL   = ENV['REDISCLOUD_URL']
 
+# TODO: Move these to YAML or ENV
+TITLES = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀' ]
+FACTOR = 100
+
 get '/' do
 end
 
 def increment_user(redis, user, amount)
-  redis.set(user.login, redis.get(user.login).to_i + amount)
+  redis.set(user.login, (redis.get(user.login).to_i + amount))
+end
+
+def score_icon(score)
+  return '☠ₓ'          if score <= 0
+  return ':godmode:₉₉' if score >= (TITLES.size * FACTOR)
+  return TITLES[ score / FACTOR ]
 end
 
 def review_label!(repository, issue)
@@ -26,23 +38,29 @@ def comment_created_message(repository, issue, comment)
   redis = Redis.new(:url => REDISCLOUD_URL)
   if comment.matches?(/p\w\wg/i)
     message = "Ping :ping:"
-    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) \
+      unless issue.owner?(comment.user)
   elsif comment.matches?(/rebase/i)
     message = "Rebase :git:"
-    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) \
+      unless issue.owner?(comment.user)
   elsif comment.matches?(/\+1/i)
     message = "Thumbs up :+1:"
     increment_user(redis, comment.user, 2)
-    increment_user(redis, issue.user,   2)
+    increment_user(redis, issue.user, 2)
   elsif comment.matches?(/lgtm/i)
     message = "Looks good :check:"
-    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) \
+      unless issue.owner?(comment.user)
   else
-    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) \
+      unless issue.owner?(comment.user)
   end
 
+  score = score_icon(redis.get(comment.user.login).to_i)
+
   if message
-    return "[#{repository} #{issue}] #{comment.user}: #{message}\n>>>#{comment.body.slice(0...255)}"
+    return "[#{repository} #{issue}] #{score} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...255)}"
   end
 end
 
