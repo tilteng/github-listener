@@ -4,14 +4,9 @@ require 'github_api'
 require "./lib/slack_api"
 require "./lib/github_event_handler"
 
-SLACK_API_KEY = ENV['SLACK_API_KEY']
+SLACK_API_KEY    = ENV['SLACK_API_KEY']
 SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
-
-GITHUB_API_KEY = ENV['GITHUB_API_KEY']
-
-def team_name_for_project(repository)
-  "[review:#{repository.name}]"
-end
+GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
 
 get '/' do
 end
@@ -23,21 +18,15 @@ end
 
 def comment_created_message(repository, issue, comment)
   if comment.matches?(/p\w\wg/i)
-    if issue.owner?(comment.user)
-      message = "wants input on their issue"
-    else
-      message = "wants input on this issue"
-    end
+    message = "Ping :ping:"
+  elsif comment.matches?(/\+1/i)
+    message = "Thumbs up :+1:"
   elsif comment.matches?(/lgtm/i)
-    if issue.owner?(comment.user)
-      message = "thinks their issue is great"
-    else
-      message = "has a positive opinion about this"
-    end
+    message = "Looks good :check:"
   end
 
   if message
-    return "#{team_name_for_project(repository)}#{issue} #{comment.user} #{message}\n```#{comment.body.slice(0...100)}```"
+    return "> #{repository} #{issue} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...100)}..."
   end
 end
 

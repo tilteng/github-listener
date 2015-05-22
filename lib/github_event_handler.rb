@@ -13,6 +13,14 @@ class GithubRepository
   def name
     @data["name"]
   end
+
+  def to_s
+    to_slack_string
+  end
+
+  def to_slack_string
+    "<http://github.com/#{@data["full_name"]}|#{@data["name"]}>"
+  end
 end
 
 class GithubComment
@@ -55,7 +63,7 @@ class GithubUser
   end
 
   def to_slack_string
-    "@#{login}"
+    "<http://github.com/#{login}|#{login}>"
   end
 end
 
