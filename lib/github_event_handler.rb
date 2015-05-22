@@ -19,7 +19,7 @@ class GithubRepository
   end
 
   def to_slack_string
-    "<http://github.com/#{@data["full_name"]}|#{@data["name"]}>"
+    "<http://github.com/#{@data["full_name"]}|review:#{@data["name"]}>"
   end
 end
 
