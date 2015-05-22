@@ -26,7 +26,7 @@ def comment_created_message(repository, issue, comment)
   end
 
   if message
-    return "> #{repository} #{issue} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...100)}..."
+    return "#{repository} #{issue} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...100)}..."
   end
 end
 
