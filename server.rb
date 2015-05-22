@@ -27,6 +27,9 @@ def comment_created_message(repository, issue, comment)
   if comment.matches?(/p\w\wg/i)
     message = "Ping :ping:"
     increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+  elsif comment.matches?(/rebase/i)
+    message = "Rebase :git:"
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/\+1/i)
     message = "Thumbs up :+1:"
     increment_user(redis, comment.user, 2)
