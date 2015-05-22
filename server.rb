@@ -46,8 +46,8 @@ def comment_created_message(repository, issue, comment)
       unless issue.owner?(comment.user)
   elsif comment.matches?(/\+1/i)
     message = "Thumbs up :+1:"
-    increment_user(redis, comment.user, 2)
-    increment_user(redis, issue.user, 2)
+    increment_user(redis, comment.user, 1)
+    increment_user(redis, issue.user, 1)
   elsif comment.matches?(/lgtm/i)
     message = "Looks good :check:"
     increment_user(redis, comment.user, 1) \
