@@ -1,3 +1,4 @@
+require 'redis'
 require 'sinatra'
 require 'json'
 require 'github_api'
@@ -7,8 +8,13 @@ require "./lib/github_event_handler"
 SLACK_API_KEY    = ENV['SLACK_API_KEY']
 SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
+REDISCLOUD_URL   = ENV['REDISCLOUD_URL']
 
 get '/' do
+end
+
+def increment_user(redis, user, amount)
+  redis.set(user.login, redis.get(user.login).to_i + amount)
 end
 
 def review_label!(repository, issue)
@@ -17,12 +23,19 @@ def review_label!(repository, issue)
 end
 
 def comment_created_message(repository, issue, comment)
+  redis = Redis.new(:url => REDISCLOUD_URL)
   if comment.matches?(/p\w\wg/i)
     message = "Ping :ping:"
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/\+1/i)
     message = "Thumbs up :+1:"
+    increment_user(redis, comment.user, 2)
+    increment_user(redis, issue.user,   2)
   elsif comment.matches?(/lgtm/i)
     message = "Looks good :check:"
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
+  else
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   end
 
   if message
