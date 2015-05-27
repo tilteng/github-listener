@@ -106,6 +106,10 @@ class GithubEventHandler
     @data["action"] == "created"
   end
 
+  def comment
+    GithubComment.new(@data["comment"])
+  end
+
   def comment?
     !@data["comment"].nil?
   end
@@ -114,8 +118,8 @@ class GithubEventHandler
     GithubIssue.new(@data["issue"])
   end
 
-  def comment
-    GithubComment.new(@data["comment"])
+  def issue?
+    !@data["issue"].nil?
   end
 
   def repository

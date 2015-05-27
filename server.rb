@@ -34,8 +34,7 @@ def review_label!(repository, issue)
   github.issues.labels.add(repository.organization, repository.name, issue.number, 'Needs Review')
 end
 
-def comment_created_message(repository, issue, comment)
-  redis = Redis.new(:url => REDISCLOUD_URL)
+def comment_created_message(redis, repository, issue, comment)
   if comment.matches?(/p\w\wg/i)
     message = "Ping :ping:"
     increment_user(redis, comment.user, 1) \
@@ -65,15 +64,18 @@ def comment_created_message(repository, issue, comment)
 end
 
 post '/payload' do
-  data = JSON.parse(request.body.read)
+  data  = JSON.parse(request.body.read)
   event = GithubEventHandler.new(data)
-  issue = event.issue
-  comment = event.comment
+  redis = Redis.new(:url => REDISCLOUD_URL)
   if event.comment_created?
-    message = comment_created_message(event.repository, issue, comment)
-    unless message.nil?
-      slack = SlackApi.new(SLACK_API_KEY)
-      slack.post_message(SLACK_CHANNEL_ID, message)
+    if event.issue?
+      message = comment_created_message(redis, event.repository, event.issue, event.comment)
+      unless message.nil?
+        slack = SlackApi.new(SLACK_API_KEY)
+        slack.post_message(SLACK_CHANNEL_ID, message)
+      end
+    else
+      increment_user(redis, event.comment.user, 1)
     end
   end
   nil
