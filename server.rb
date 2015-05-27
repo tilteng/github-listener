@@ -75,7 +75,7 @@ post '/payload' do
         slack.post_message(SLACK_CHANNEL_ID, message)
       end
     else
-      increment_user(redis, event.comment.user, 1)
+      increment_user(redis, comment.user, 1)
     end
   end
   nil
