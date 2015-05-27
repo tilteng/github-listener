@@ -93,6 +93,6 @@ post '/coverage' do
   github_branch = params["github_branch"].first
 
   slack = SlackApi.new(SLACK_API_KEY)
-  slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: #{sha}\n#{message}")
+  slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: <#{github_url}|#{github_branch}>\n#{message}")
   nil
 end
