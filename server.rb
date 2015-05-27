@@ -89,6 +89,8 @@ post '/coverage' do
   params = CGI::parse(request.body.read)
   message = params["summary"].first.gsub(/\e\[(\d+)m/, "").strip
   sha = params["sha"].first
+  github_url = params["github_url"].first
+  github_branch = params["github_branch"].first
 
   slack = SlackApi.new(SLACK_API_KEY)
   slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: #{sha}\n#{message}")
