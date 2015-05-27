@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'cgi'
 require 'redis'
 require 'sinatra'
 require 'json'
@@ -11,6 +12,9 @@ SLACK_API_KEY    = ENV['SLACK_API_KEY']
 SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
 REDISCLOUD_URL   = ENV['REDISCLOUD_URL']
+
+$stdout.sync = true
+
 
 # TODO: Move these to YAML or ENV
 TITLES = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀' ]
@@ -78,5 +82,15 @@ post '/payload' do
       increment_user(redis, comment.user, 1)
     end
   end
+  nil
+end
+
+post '/coverage' do
+  params = CGI::parse(request.body.read)
+  message = params["summary"].first.gsub(/\e\[(\d+)m/, "").strip
+  sha = params["sha"].first
+
+  slack = SlackApi.new(SLACK_API_KEY)
+  slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: #{sha}\n#{message}")
   nil
 end
