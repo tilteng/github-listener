@@ -17,14 +17,21 @@ $stdout.sync = true
 
 
 # TODO: Move these to YAML or ENV
-TITLES = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀' ]
-FACTOR = 100
+TITLES   = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀' ]
+EXPBAR   = [ '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█' ]
+FACTOR   = 100
+INTERVAL = FACTOR.to_f / EXPBAR.size.to_f
 
 get '/' do
 end
 
 def increment_user(redis, user, amount)
   redis.set(user.login, (redis.get(user.login).to_i + amount))
+end
+
+def exp_icon(score)
+  return '' if score <= 0
+  return EXPBAR[ ((score % FACTOR) / INTERVAL).to_i ]
 end
 
 def score_icon(score)
@@ -60,10 +67,11 @@ def comment_created_message(redis, repository, issue, comment)
       unless issue.owner?(comment.user)
   end
 
-  score = score_icon(redis.get(comment.user.login).to_i)
+  score = redis.get(comment.user.login).to_i
+  display = exp_icon(score) + score_icon(score)
 
   if message
-    return "[#{repository} #{issue}] #{score} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...255)}"
+    return "[#{repository} #{issue}] #{display} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...255)}"
   end
 end
 
@@ -86,11 +94,11 @@ post '/payload' do
 end
 
 post '/coverage' do
-  params = CGI::parse(request.body.read)
-  message = params["summary"].first.gsub(/\e\[(\d+)m/, "").strip
-  sha = params["sha"].first
-  github_url = params["github_url"].first
-  github_branch = params["github_branch"].first
+#  params = CGI::parse(request.body.read)
+#  message = params["summary"].first.gsub(/\e\[(\d+)m/, "").strip
+#  sha = params["sha"].first
+#  github_url = params["github_url"].first
+#  github_branch = params["github_branch"].first
 
 #  slack = SlackApi.new(SLACK_API_KEY)
 #  slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: <#{github_url}|#{github_branch}>\n#{message}")
