@@ -62,6 +62,9 @@ def comment_created_message(redis, repository, issue, comment)
     message = "Looks good :check:"
     increment_user(redis, comment.user, 1) \
       unless issue.owner?(comment.user)
+  elsif comment.matches?(/discuss/i)
+    message = "Please discuss :muscle:"
+    increment_user(redis, comment.user, 1)
   else
     increment_user(redis, comment.user, 1) \
       unless issue.owner?(comment.user)
