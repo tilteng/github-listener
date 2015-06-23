@@ -46,28 +46,24 @@ def review_label!(repository, issue)
 end
 
 def comment_created_message(redis, repository, issue, comment)
-  if comment.matches?(/p\w\wg/i)
+  if comment.matches?(/p(i|o)ng/i)
     message = "Ping :ping:"
-    increment_user(redis, comment.user, 1) \
-      unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/rebase/i)
     message = "Rebase :git:"
-    increment_user(redis, comment.user, 1) \
-      unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/\+1/i)
     message = "Thumbs up :+1:"
     increment_user(redis, comment.user, 1)
     increment_user(redis, issue.user, 1)
   elsif comment.matches?(/lgtm/i)
     message = "Looks good :check:"
-    increment_user(redis, comment.user, 1) \
-      unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/discuss/i)
     message = "Please discuss :muscle:"
     increment_user(redis, comment.user, 2)
   else
-    increment_user(redis, comment.user, 1) \
-      unless issue.owner?(comment.user)
+    increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   end
 
   score = redis.get(comment.user.login).to_i
