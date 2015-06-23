@@ -46,7 +46,7 @@ def review_label!(repository, issue)
 end
 
 def comment_created_message(redis, repository, issue, comment)
-  if comment.matches?(/^p(i|o)ng$/i)
+  if comment.matches?(/\b(i|o)ng\b/i)
     message = "Ping :ping:"
     increment_user(redis, comment.user, 1) unless issue.owner?(comment.user)
   elsif comment.matches?(/rebase/i)
