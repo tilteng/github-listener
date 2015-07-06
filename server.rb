@@ -18,7 +18,7 @@ $stdout.sync = true
 
 # TODO: Move these to YAML or ENV
 TITLES   = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀' ]
-EXPBAR   = [ '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█' ]
+EXPBAR   = [ '▁', '▂', '▃', '▅', '▆', '▇', '█' ]
 FACTOR   = 100
 INTERVAL = FACTOR.to_f / EXPBAR.size.to_f
 
