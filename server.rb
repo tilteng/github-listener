@@ -35,7 +35,7 @@ def exp_icon(score)
 end
 
 def score_icon(score)
-  return '☠ₓ'          if score <= 0
+  return '☠'           if score <= 0
   return ':godmode:₉₉' if score >= (TITLES.size * FACTOR)
   return TITLES[ score / FACTOR ]
 end
