@@ -97,6 +97,16 @@ class GithubIssue
   end
 end
 
+class GithubPullRequest
+  def initialize(data)
+    @data = data
+  end
+
+  def data
+    @data
+  end
+end
+
 class GithubEventHandler
   def initialize(data)
     @data = data
@@ -116,6 +126,18 @@ class GithubEventHandler
 
   def issue
     GithubIssue.new(@data["issue"])
+  end
+
+  def pull_request
+    GithubPullRequest.new(@data['pull_request'])
+  end
+
+  def opened?
+    @data["action"] === "opened"
+  end
+
+  def pull_request?
+    !@data['pull_request'].nil?
   end
 
   def issue?

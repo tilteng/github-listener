@@ -78,7 +78,10 @@ post '/payload' do
   data  = JSON.parse(request.body.read)
   event = GithubEventHandler.new(data)
   redis = Redis.new(:url => REDISCLOUD_URL)
-  if event.comment_created?
+  if event.pull_request?
+    puts "A pull request event was received"
+    puts event.pull_request.data
+  elsif event.comment_created?
     if event.issue?
       message = comment_created_message(redis, event.repository, event.issue, event.comment)
       unless message.nil?
