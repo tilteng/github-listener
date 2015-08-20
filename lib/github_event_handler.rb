@@ -105,6 +105,26 @@ class GithubPullRequest
   def data
     @data
   end
+
+  def user
+    GithubUser.new(@data["user"])
+  end
+
+  def url
+    @data["html_url"]
+  end
+
+  def number
+    @data["number"]
+  end
+
+  def to_slack_string
+    "<#{url}|##{number}>"
+  end
+
+  def to_s
+    to_slack_string
+  end
 end
 
 class GithubEventHandler
@@ -130,6 +150,10 @@ class GithubEventHandler
 
   def pull_request
     GithubPullRequest.new(@data['pull_request'])
+  end
+
+  def labeled?
+    @data['action'] === 'labeled' || @data['action'] === 'unlabeled'
   end
 
   def opened?

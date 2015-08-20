@@ -74,18 +74,31 @@ def comment_created_message(redis, repository, issue, comment)
   end
 end
 
+def pull_request_opened_message(redis, repository, pull_request)
+  score = redis.get(pull_request.user.login).to_i
+  display = exp_icon(score) + score_icon(score)
+  increment_user(redis, pull_request.user, 5)
+
+  message = 'Created a pull request :parrot:'
+  return "[#{repository} #{pull_request}] #{display} #{pull_request.user}: #{message}"
+end
+
 post '/payload' do
   data  = JSON.parse(request.body.read)
   event = GithubEventHandler.new(data)
   redis = Redis.new(:url => REDISCLOUD_URL)
+  slack = SlackApi.new(SLACK_API_KEY)
   if event.pull_request?
-    puts "A pull request event was received"
-    puts event.pull_request.data
+    if event.opened?
+      message = pull_request_opened_message(redis, event.repository, event.pull_request)
+      unless message.nil?
+        slack.post_message(SLACK_CHANNEL_ID, message)
+      end
+    end
   elsif event.comment_created?
     if event.issue?
       message = comment_created_message(redis, event.repository, event.issue, event.comment)
       unless message.nil?
-        slack = SlackApi.new(SLACK_API_KEY)
         slack.post_message(SLACK_CHANNEL_ID, message)
       end
     else
@@ -96,13 +109,5 @@ post '/payload' do
 end
 
 post '/coverage' do
-#  params = CGI::parse(request.body.read)
-#  message = params["summary"].first.gsub(/\e\[(\d+)m/, "").strip
-#  sha = params["sha"].first
-#  github_url = params["github_url"].first
-#  github_branch = params["github_branch"].first
-
-#  slack = SlackApi.new(SLACK_API_KEY)
-#  slack.post_message(SLACK_CHANNEL_ID, "Test coverage results: <#{github_url}|#{github_branch}>\n#{message}")
   nil
 end
