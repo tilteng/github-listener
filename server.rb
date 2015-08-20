@@ -79,7 +79,7 @@ def pull_request_opened_message(redis, repository, pull_request)
   display = exp_icon(score) + score_icon(score)
   increment_user(redis, pull_request.user, 5)
 
-  message = 'Created a pull request :parrot:'
+  message = 'Created a pull request :git:'
   return "[#{repository} #{pull_request}] #{display} #{pull_request.user}: #{message}"
 end
 
