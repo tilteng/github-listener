@@ -78,6 +78,7 @@ def pull_request_opened_message(redis, repository, pull_request)
   score = redis.get(pull_request.user.login).to_i
   display = exp_icon(score) + score_icon(score)
   increment_user(redis, pull_request.user, 5)
+  return nil unless repository.name =~ /site|internal-api|nightwatch/;
 
   message = 'Created a pull request :git:'
   return "[#{repository} #{pull_request}] #{display} #{pull_request.user}: #{message}"
