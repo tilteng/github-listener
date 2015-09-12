@@ -80,6 +80,10 @@ class GithubIssue
     @issue["html_url"]
   end
 
+  def labels
+    @issue["labels"]
+  end
+
   def user
     @user ||= GithubUser.new(@issue['user'])
   end

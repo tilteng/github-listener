@@ -74,14 +74,15 @@ def comment_created_message(redis, repository, issue, comment)
   end
 end
 
-def pull_request_opened_message(redis, repository, pull_request)
-  score = redis.get(pull_request.user.login).to_i
+def handle_labeled_event(event, redis, slack)
+  repository = event.repository
+  issue = event.issue
+  return unless issue.labels.find { |l| l["name"] == "Needs Review" }
+  score = redis.get(issue.user.login).to_i
   display = exp_icon(score) + score_icon(score)
-  increment_user(redis, pull_request.user, 5)
-  return nil unless repository.name =~ /site|internal-api|nightwatch/;
-
-  message = 'Created a pull request :git:'
-  return "[#{repository} #{pull_request}] #{display} #{pull_request.user}: #{message}"
+  msg = 'Needs review :git:'
+  msg = "[#{repository} #{issue}] #{display} #{issue.user}: #{msg}"
+  slack.post_message(SLACK_CHANNEL_ID, msg)
 end
 
 post '/payload' do
@@ -89,13 +90,10 @@ post '/payload' do
   event = GithubEventHandler.new(data)
   redis = Redis.new(:url => REDISCLOUD_URL)
   slack = SlackApi.new(SLACK_API_KEY)
-  if event.pull_request?
-    if event.opened?
-      message = pull_request_opened_message(redis, event.repository, event.pull_request)
-      unless message.nil?
-        slack.post_message(SLACK_CHANNEL_ID, message)
-      end
-    end
+  return nil unless event.repository.name =~ /site|internal-api|nightwatch|listener/
+
+  if event.labeled?
+      handle_labeled_event(event, redis, slack)
   elsif event.comment_created?
     if event.issue?
       message = comment_created_message(redis, event.repository, event.issue, event.comment)
