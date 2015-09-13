@@ -1,0 +1,9 @@
+
+channel_map:
+  chef: '#sysops'
+  crowdtilt-internal-api: '#engineering'
+  crowdtilt-public-site: '#engineering'
+  site: '#engineering'
+  tilt-android: '#mobile'
+  tilt-images: '#engineering'
+  vagrant: '#sysops'

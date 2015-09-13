@@ -3,5 +3,5 @@ ruby "2.2.1"
 
 gem "github_api"
 gem 'redis'
-gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'httparty'
