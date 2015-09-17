@@ -136,8 +136,20 @@ class GithubEventHandler
     @data = data
   end
 
+  def action
+    @data['action']
+  end
+
+  def labeled?
+    self.action === 'labeled' || self.action === 'unlabeled'
+  end
+
+  def opened?
+    self.action === "opened"
+  end
+
   def comment_created?
-    @data["action"] == "created"
+    self.action == "created"
   end
 
   def comment
@@ -156,12 +168,8 @@ class GithubEventHandler
     GithubPullRequest.new(@data['pull_request'])
   end
 
-  def labeled?
-    @data['action'] === 'labeled' || @data['action'] === 'unlabeled'
-  end
-
-  def opened?
-    @data["action"] === "opened"
+  def label
+    @data['label'] && @data['label']['name']
   end
 
   def pull_request?

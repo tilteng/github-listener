@@ -76,13 +76,18 @@ end
 
 def handle_labeled_event(event, redis, slack)
   repository = event.repository
-  issue = event.issue
-  return unless issue.labels.find { |l| l["name"] == "Needs Review" }
+  issue = event.pull_request
+  return unless event.label == "Needs Review"
   score = redis.get(issue.user.login).to_i
   display = exp_icon(score) + score_icon(score)
   msg = 'Needs review :git:'
   msg = "[#{repository} #{issue}] #{display} #{issue.user}: #{msg}"
+
   slack.post_message(SLACK_CHANNEL_ID, msg)
+end
+
+def valid_event?(event)
+  event.repository.name =~ /site|internal-api|nightwatch|listener/
 end
 
 post '/payload' do
@@ -90,7 +95,8 @@ post '/payload' do
   event = GithubEventHandler.new(data)
   redis = Redis.new(:url => REDISCLOUD_URL)
   slack = SlackApi.new(SLACK_API_KEY)
-  return nil unless event.repository.name =~ /site|internal-api|nightwatch|listener/
+
+  return nil unless valid_event?(event)
 
   if event.labeled?
       handle_labeled_event(event, redis, slack)
