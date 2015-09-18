@@ -141,7 +141,11 @@ class GithubEventHandler
   end
 
   def labeled?
-    self.action === 'labeled' || self.action === 'unlabeled'
+    self.action === 'labeled'
+  end
+
+  def unlabeled?
+    self.action === 'unlabeled'
   end
 
   def opened?

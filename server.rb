@@ -3,15 +3,16 @@
 require 'cgi'
 require 'redis'
 require 'sinatra'
+require 'sinatra/config_file'
 require 'json'
 require 'github_api'
 require "./lib/slack_api"
 require "./lib/github_event_handler"
 
 SLACK_API_KEY    = ENV['SLACK_API_KEY']
-SLACK_CHANNEL_ID = ENV['SLACK_CHANNEL_ID']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
 REDISCLOUD_URL   = ENV['REDISCLOUD_URL']
+config_file './config.yml'
 
 $stdout.sync = true
 
@@ -74,6 +75,10 @@ def comment_created_message(redis, repository, issue, comment)
   end
 end
 
+def slack_channel_id(event)
+  settings.channel_map[event.repository.name]
+end
+
 def handle_labeled_event(event, redis, slack)
   repository = event.repository
   issue = event.pull_request
@@ -83,20 +88,15 @@ def handle_labeled_event(event, redis, slack)
   msg = 'Needs review :git:'
   msg = "[#{repository} #{issue}] #{display} #{issue.user}: #{msg}"
 
-  slack.post_message(SLACK_CHANNEL_ID, msg)
-end
-
-def valid_event?(event)
-  event.repository.name =~ /site|internal-api|nightwatch|listener/
+  slack.post_message(slack_channel_id(event), msg)
 end
 
 post '/payload' do
   data  = JSON.parse(request.body.read)
   event = GithubEventHandler.new(data)
+  channel = slack_channel_id(event) or return nil
   redis = Redis.new(:url => REDISCLOUD_URL)
   slack = SlackApi.new(SLACK_API_KEY)
-
-  return nil unless valid_event?(event)
 
   if event.labeled?
       handle_labeled_event(event, redis, slack)
@@ -104,7 +104,7 @@ post '/payload' do
     if event.issue?
       message = comment_created_message(redis, event.repository, event.issue, event.comment)
       unless message.nil?
-        slack.post_message(SLACK_CHANNEL_ID, message)
+        slack.post_message(channel, message)
       end
     else
       increment_user(redis, event.comment.user, 1)
