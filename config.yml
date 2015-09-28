@@ -6,4 +6,5 @@ channel_map:
   site: '#engineering'
   tilt-android: '#mobile'
   tilt-images: '#engineering'
+  tilt-nightwatch: '#engineering'
   vagrant: '#sysops'
