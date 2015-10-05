@@ -5,6 +5,7 @@ channel_map:
   crowdtilt-public-site: '#engineering'
   site: '#engineering'
   tilt-android: '#mobile'
+  tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
   tilt-nightwatch: '#engineering'
   vagrant: '#sysops'
