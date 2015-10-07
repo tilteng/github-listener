@@ -71,7 +71,7 @@ def comment_created_message(redis, repository, issue, comment)
   display = exp_icon(score) + score_icon(score)
 
   if message
-    return "[#{repository} #{issue}] #{display} #{comment.user}: #{message}\n>>>#{comment.body.slice(0...255)}"
+    return "[#{repository} #{issue}] #{display} #{comment.user.login}: #{message}\n>>>#{comment.body.slice(0...255)}"
   end
 end
 
