@@ -2,6 +2,7 @@
 channel_map:
   chef: '#sysops'
   crowdtilt-internal-api: '#engineering'
+  crowdtilt-open-multisite: '#engineering'
   crowdtilt-public-site: '#engineering'
   site: '#engineering'
   tilt-android: '#mobile'
