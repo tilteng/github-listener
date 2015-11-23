@@ -1,12 +1,12 @@
 
 channel_map:
+  api: '#engineering'
   chef: '#sysops'
-  crowdtilt-internal-api: '#engineering'
   crowdtilt-public-site: '#engineering'
   tilt-android: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
   tilt-nightwatch: '#engineering'
   tilt-open: '#engineering'
-  tilt-web: '#engineering'
   vagrant: '#sysops'
+  web: '#engineering'
