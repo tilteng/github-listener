@@ -6,7 +6,7 @@ channel_map:
   tilt-android: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
-  tilt-nightwatch: '#engineering'
+  web-nightwatch: '#engineering'
   tilt-open: '#engineering'
   vagrant: '#sysops'
   web: '#engineering'
