@@ -2,7 +2,6 @@
 channel_map:
   api: '#engineering'
   chef: '#sysops'
-  crowdtilt-public-site: '#engineering'
   tilt-android: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
@@ -10,3 +9,4 @@ channel_map:
   tilt-open: '#engineering'
   vagrant: '#sysops'
   web: '#engineering'
+  web-dancer: '#engineering'
