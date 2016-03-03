@@ -122,6 +122,10 @@ class GithubPullRequest
     @data["number"]
   end
 
+  def title
+    @data["title"]
+  end
+
   def to_slack_string
     "<#{url}|##{number}>"
   end

@@ -86,7 +86,7 @@ def handle_labeled_event(event, redis, slack)
   score = redis.get(issue.user.login).to_i
   display = exp_icon(score) + score_icon(score)
   msg = 'Needs review :git:'
-  msg = "[#{repository} #{issue}] #{display} #{issue.user.login}: #{msg}"
+  msg = "[#{repository} #{issue}] #{display} #{issue.user.login}: #{msg}\n>>>#{issue.title}"
 
   slack.post_message(slack_channel_id(event), msg)
 end
