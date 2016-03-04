@@ -36,10 +36,7 @@ def exp_icon(score)
 end
 
 def score_icon(score, github_login)
-  if (github_login === 'tildedave') {
-    return '☃'
-  }
-
+  return '☃'           if github_login === 'tildedave'
   return '☠'           if score <= 0
   return ':godmode:₉₉' if score >= (TITLES.size * FACTOR)
   return TITLES[ score / FACTOR ]
