@@ -35,15 +35,14 @@ def exp_icon(score)
   return EXPBAR[ ((score % FACTOR) / INTERVAL).to_i ]
 end
 
-def score_icon(score)
+def score_icon(score, github_login)
+  if (github_login === 'tildedave') {
+    return '☃'
+  }
+
   return '☠'           if score <= 0
   return ':godmode:₉₉' if score >= (TITLES.size * FACTOR)
   return TITLES[ score / FACTOR ]
-end
-
-def review_label!(repository, issue)
-  github = Github.new oauth_token: GITHUB_API_KEY
-  github.issues.labels.add(repository.organization, repository.name, issue.number, 'Needs Review')
 end
 
 def comment_created_message(redis, repository, issue, comment)
@@ -68,7 +67,7 @@ def comment_created_message(redis, repository, issue, comment)
   end
 
   score = redis.get(comment.user.login).to_i
-  display = exp_icon(score) + score_icon(score)
+  display = exp_icon(score) + score_icon(score, comment.user.login)
 
   if message
     return "[#{repository} #{issue}] #{display} #{comment.user.login}: #{message}\n>>>#{comment.body.slice(0...255)}"
@@ -84,7 +83,7 @@ def handle_labeled_event(event, redis, slack)
   issue = event.pull_request
   return unless event.label == "Needs Review"
   score = redis.get(issue.user.login).to_i
-  display = exp_icon(score) + score_icon(score)
+  display = exp_icon(score) + score_icon(score, issue.user.login)
   msg = 'Needs review :git:'
   msg = "[#{repository} #{issue}] #{display} #{issue.user.login}: #{msg}\n>>>#{issue.title}"
 
@@ -110,9 +109,5 @@ post '/payload' do
       increment_user(redis, event.comment.user, 1)
     end
   end
-  nil
-end
-
-post '/coverage' do
   nil
 end
