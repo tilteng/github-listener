@@ -33,7 +33,13 @@ private
 
   def comment_link
     url = @data['comment']['html_url']
-    # number = @data['issue']['number']
-    "<#{url}|comment>"
+    if @data['issue']
+      number = @data['issue']['number']
+    elsif @data['pull_request']
+      number = @data['pull_request']['number']
+    else
+      number = '???'
+    end
+    "<#{url}|##{number}>"
   end
 end
