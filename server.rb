@@ -23,7 +23,7 @@ post '/payload' do
 
   handler = EventHandler.build(data)
   if handler && channel_id
-    channel_id = settings.channel_map[handler.repository_name]
+    channel_id = settings.channel_map[repository_name]
     handler.execute(slack, channel_id)
     handler.random(slack, channel_id)
   end
