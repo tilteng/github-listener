@@ -5,9 +5,13 @@ module EventHandler
   def self.build(data)
     case data['action']
     when 'labeled'
+      puts "Handling labeled event"
       PullRequestLabeledEventHandler.new(data)
     when 'created'
-      CommentAddedEventHandler.new(data)
+      if data['comment']
+        puts "Handling comment created event"
+        CommentAddedEventHandler.new(data)
+      end
     end
   end
 end
