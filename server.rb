@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/config_file'
 require 'json'
 require './lib/slack_api'
-require './lib/base_event_handler'
+require './models/event_handlers/base_event_handler'
 
 SLACK_API_KEY    = ENV['SLACK_API_KEY']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
