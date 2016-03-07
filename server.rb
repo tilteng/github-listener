@@ -21,7 +21,7 @@ post '/payload' do
   channel_id = settings.channel_map[repository_name]
   slack = SlackApi.new(SLACK_API_KEY)
 
-  handler = GithubEventHandler.build(data)
+  handler = BaseEventHandler.build(data)
   if handler && channel_id
     channel_id = settings.channel_map[handler.repository_name]
     handler.execute(slack, channel_id)
