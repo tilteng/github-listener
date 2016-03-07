@@ -29,4 +29,3 @@ class SlackApi
     JSON.parse(response.body)
   end
 end
-
