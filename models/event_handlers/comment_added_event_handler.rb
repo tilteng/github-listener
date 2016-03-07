@@ -13,10 +13,14 @@ class CommentAddedEventHandler < BaseEventHandler
     end
   end
 
+  def target_user_login
+    @data['comment']['user']['login']
+  end
+
 private
 
   def message(label)
-    "[#{repository_link} #{comment_link}] #{comment_login}: #{label}\n>>>#{comment_preview}"
+    "[#{repository_link} #{comment_link}] #{target_user_login}: #{label}\n>>>#{comment_preview}"
   end
 
   def comment_body
@@ -27,34 +31,9 @@ private
     comment_body.slice(0...255)
   end
 
-  def comment_login
-    @data['comment']['user']['login']
-  end
-
-  def comment_by_issue_owner?
-    comment_login == pull_request_login
-  end
-
   def comment_link
     url = @data['comment']['html_url']
     number = @data['pull_request']['number']
     "<#{url}|##{number}>"
-  end
-
-  def github_user_link
-    login = target_user_login
-    "<http://github.com/#{login}|#{login}>"
-  end
-
-  def label
-    @data['label'] && @data['label']['name']
-  end
-
-  def target_user_login
-    @data['pull_request']['user']['login']
-  end
-
-  def title
-    @data["title"]
   end
 end

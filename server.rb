@@ -25,5 +25,6 @@ post '/payload' do
   if handler && channel_id
     channel_id = settings.channel_map[handler.repository_name]
     handler.execute(slack, channel_id)
+    handler.random(slack, channel_id)
   end
 end

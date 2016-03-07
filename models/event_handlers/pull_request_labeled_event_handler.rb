@@ -3,15 +3,11 @@ require_relative './base_event_handler'
 class PullRequestLabeledEventHandler < BaseEventHandler
   def execute!(slack, slack_room_id)
     if label == 'Needs review'
-      slack.post_message(slack_room_id, "[#{repository_link} #{pull_request_link}] #{user_login}: Needs review :git:>>>#{title}")
+      slack.post_message(slack_room_id, "[#{repository_link} #{pull_request_link}] #{target_user_login}: Needs review :git:>>>#{title}")
     end
   end
 
 private
-
-  def user_login
-    @data['pull_request']['user']['login']
-  end
 
   def label
     @data['label'] && @data['label']['name']
