@@ -1,3 +1,6 @@
+require_relative './comment_added_event_handler'
+require_relative './pull_request_labeled_event_handler'
+
 class BaseEventHandler
   EMOJI = %w[:parrot: :pacman: :pig: :octopus: :chicken:]
 
