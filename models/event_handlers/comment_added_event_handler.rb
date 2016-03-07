@@ -33,7 +33,7 @@ private
 
   def comment_link
     url = @data['comment']['html_url']
-    number = @data['pull_request']['number']
-    "<#{url}|##{number}>"
+    # number = @data['issue']['number']
+    "<#{url}|comment>"
   end
 end
