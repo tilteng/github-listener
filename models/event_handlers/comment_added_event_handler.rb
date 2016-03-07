@@ -4,12 +4,16 @@ class CommentAddedEventHandler < BaseEventHandler
   def execute!(slack, slack_room_id)
     if comment_body =~ /\bp(i|o)ng\b/i
       slack.post_message slack_room_id, message('ping')
+      self.random!(slack, slack_room_id)
     elsif comment_body =~ /\+1/i
       slack.post_message slack_room_id, message('+1')
+      self.random!(slack, slack_room_id)
     elsif comment_body =~ /lgtm/i
       slack.post_message slack_room_id, message('looks good')
+      self.random!(slack, slack_room_id)
     elsif comment_body =~ /discuss/i
       slack.post_message slack_room_id, message('discuss :muscle:')
+      self.random!(slack, slack_room_id)
     end
   end
 
