@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/config_file'
 require 'json'
 require './lib/slack_api'
-require './models/event_handlers/base_event_handler'
+require './models/event_handler'
 
 SLACK_API_KEY    = ENV['SLACK_API_KEY']
 GITHUB_API_KEY   = ENV['GITHUB_API_KEY']
@@ -21,7 +21,7 @@ post '/payload' do
   channel_id = settings.channel_map[repository_name]
   slack = SlackApi.new(SLACK_API_KEY)
 
-  handler = BaseEventHandler.build(data)
+  handler = EventHandler.build(data)
   if handler && channel_id
     channel_id = settings.channel_map[handler.repository_name]
     handler.execute(slack, channel_id)

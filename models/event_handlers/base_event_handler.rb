@@ -1,17 +1,5 @@
-require_relative './comment_added_event_handler'
-require_relative './pull_request_labeled_event_handler'
-
 class BaseEventHandler
   EMOJI = %w[:parrot: :pacman: :pig: :octopus: :chicken:]
-
-  def self.build(data)
-    case data['action']
-    when 'labeled'
-      PullRequestLabeledEventHandler.new(data)
-    when 'created'
-      CommentAddedEventHandler.new(data)
-    end
-  end
 
   def random!(slack, channel_id)
     event = rand(10)
