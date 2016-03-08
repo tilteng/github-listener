@@ -2,6 +2,7 @@
 require 'cgi'
 require 'sinatra'
 require 'sinatra/config_file'
+require 'redis'
 require 'json'
 require './lib/slack_api'
 require './models/event_handler'

@@ -38,6 +38,7 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+    redis (3.2.1)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -58,4 +59,5 @@ PLATFORMS
 DEPENDENCIES
   github_api
   httparty
+  redis
   sinatra-contrib
