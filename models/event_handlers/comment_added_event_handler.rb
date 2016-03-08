@@ -1,20 +1,21 @@
 require_relative './base_event_handler'
 
 class CommentAddedEventHandler < BaseEventHandler
-  def execute!(slack, slack_room_id)
+  def execute!(redis, slack, slack_room_id)
     if comment_body =~ /\bp(i|o)ng\b/i
-      slack.post_message slack_room_id, message('ping')
+      slack.post_message slack_room_id, message(redis, 'ping')
       self.random!(slack, slack_room_id)
     elsif comment_body =~ /\+1/i
-      slack.post_message slack_room_id, message('+1')
+      slack.post_message slack_room_id, message(redis, '+1')
       self.random!(slack, slack_room_id)
     elsif comment_body =~ /lgtm/i
-      slack.post_message slack_room_id, message('looks good')
+      slack.post_message slack_room_id, message(redis, 'looks good')
       self.random!(slack, slack_room_id)
     elsif comment_body =~ /discuss/i
-      slack.post_message slack_room_id, message('discuss :muscle:')
+      slack.post_message slack_room_id, message(redis, 'discuss :muscle:')
       self.random!(slack, slack_room_id)
     end
+    self.increment_user(redis, target_user_login)
   end
 
   def target_user_login
@@ -23,8 +24,8 @@ class CommentAddedEventHandler < BaseEventHandler
 
 private
 
-  def message(label)
-    "[#{repository_link} #{comment_link}] #{target_user_login}: #{label}\n>>>#{comment_preview}"
+  def message(redis, label)
+    "[#{repository_link} #{comment_link}] #{user_display(redis, target_user_login)}: #{label}\n>>>#{comment_preview}"
   end
 
   def comment_body
