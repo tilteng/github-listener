@@ -19,8 +19,8 @@ class BaseEventHandler
     @data = data
   end
 
-  def increment_user(redis, login, amount)
-    redis.set user.login, user_experience(redis, login) + 1
+  def increment_user(redis, login)
+    redis.set login, user_experience(redis, login) + 1
   end
 
   def repository_link
