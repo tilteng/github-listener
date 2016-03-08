@@ -4,7 +4,7 @@ class PullRequestLabeledEventHandler < BaseEventHandler
   def execute!(redis, slack, slack_room_id)
     if label.downcase == 'needs review'
       slack.post_message(slack_room_id, "[#{repository_link} #{pull_request_link}] #{user_display(redis, target_user_login)}: Needs review\n>>>#{title}")
-      self.random!(slack, slack_room_id)
+      self.random!(redis, slack, slack_room_id)
     end
   end
 

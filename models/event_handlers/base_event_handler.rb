@@ -5,13 +5,15 @@ class BaseEventHandler
   FACTOR   = 100
   INTERVAL = FACTOR.to_f / EXPBAR.size.to_f
 
-  def random!(slack, channel_id)
+  def random!(redis, slack, channel_id)
     event = rand(10)
     random_emoji = EMOJI[rand(EMOJI.size)]
     if event === 0
+      push_pet(redis, target_user_login, random_emoji)
       slack.post_message(channel_id, "A wild #{random_emoji} appears.\n#{target_user_login} captured #{random_emoji}")
+      slack.post_message(channel_id, "#{target_user_login}'s collection #{pets(redis, target_user_login).join(' ')}")
     elsif event == 1
-      slack.post_message(channel_id, "A wild #{random_emoji} appears.\nit got away...")
+      slack.post_message(channel_id, "#{target_user_login}. A wild #{random_emoji} appears. But it got away...")
     end
   end
 
@@ -21,6 +23,14 @@ class BaseEventHandler
 
   def increment_user(redis, login)
     redis.set login, user_experience(redis, login) + 1
+  end
+
+  def push_pet(redis, login, pet)
+    redis.lpush("#{login}_pets", pet)
+  end
+
+  def pets(redis, login)
+    redis.lrange("#{login}_pets", 0, 10)
   end
 
   def repository_link
