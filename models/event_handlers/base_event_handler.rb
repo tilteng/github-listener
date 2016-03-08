@@ -1,5 +1,8 @@
 class BaseEventHandler
-  EMOJI = %w[:parrot: :pacman: :pig: :octopus: :chicken:]
+  EMOJI = %w[
+    :parrot: :pacman: :pig: :octopus: :chicken: :crickets: :bee: :bird:
+    :crocodile: :ghost2: :rooster: :best: :turkey: :corgi: :doge:
+  ]
   TITLES   = [ '☹₀', '♙₁', '♘₂', '♗₃', '♖₄', '♕₅', '♔₆', '☃₇', '☼₈', '⚛₉', '☯₁₀', '⌘₁₁', '⍟₁₂', '⌹₁₃', '⍰₁₄', '⏏₁₅', '▜₁₆', '☆₁₇', '☕₁₈', '☢₁₉', '☘₂₀', ':cuteghost:₂₁', ':tiltlogo:₂₂', ':ship3:₂₃', ':ocean:₂₄', ':zap:₂₅', ':cherries:₂₆', ':heart_decoration:₂₇', ':game_die:₂₈', ':helicopter:₂₉', ':science:₃₀' ]
   EXPBAR   = [ '▁', '▂', '▃', '▅', '▆', '▇', '█' ]
   FACTOR   = 100
