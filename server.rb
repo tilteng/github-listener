@@ -29,3 +29,10 @@ post '/payload' do
     handler.execute!(redis, slack, channel_id)
   end
 end
+
+get '/user/:user_id' do
+  redis = Redis.new(:url => REDISCLOUD_URL)
+  login = params['user_id']
+  captures = redis.lrange("#{login}_pets", 0, 10).join(' ')
+  "#{login}'s collection #{captures}"
+end
