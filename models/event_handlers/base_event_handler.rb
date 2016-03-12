@@ -9,7 +9,7 @@ class BaseEventHandler
   INTERVAL = FACTOR.to_f / EXPBAR.size.to_f
 
   def random!(redis, slack, channel_id)
-    event = rand(10)
+    event = rand(3)
     random_emoji = EMOJI[rand(EMOJI.size)]
     if event === 0
       push_pet(redis, target_user_login, random_emoji)
