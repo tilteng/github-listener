@@ -16,6 +16,24 @@ $stdout.sync = true
 get '/' do
 end
 
+post '/messages' do
+  EMOJI = %w[
+    :parrot: :pacman: :pig: :octopus: :chicken: :crickets: :bee: :bird:
+    :crocodile: :ghost2: :rooster: :best: :turkey: :corgi: :doge:
+  ]
+  event = rand(10)
+  random_emoji = EMOJI[rand(EMOJI.size)]
+  target_user_login = params[:text].gsub(params[:trigger_word], '').strip
+
+  case params[:trigger_word]
+  when 'battle'
+    content_type :json
+    {
+      :text => "#{target_user_login}. A wild #{random_emoji} appears. But it got away..."
+    }.to_json
+  end
+end
+
 post '/payload' do
   data = JSON.parse(request.body.read)
   repository_name = data['repository']['name']
