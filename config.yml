@@ -2,6 +2,7 @@ channel_map:
   api: '#engineering'
   chef: '#sysops'
   tilt-android: '#mobile'
+  crowdtilt-ios: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
   web-nightwatch: '#engineering'
