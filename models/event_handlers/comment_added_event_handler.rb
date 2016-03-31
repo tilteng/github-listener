@@ -8,6 +8,9 @@ class CommentAddedEventHandler < BaseEventHandler
     elsif comment_body =~ /\+1/i
       slack.post_message slack_room_id, message(redis, '+1')
       self.random!(redis, slack, slack_room_id)
+    elsif comment_body =~ /\+\+/i
+      slack.post_message slack_room_id, message(redis, '++')
+      self.random!(redis, slack, slack_room_id)
     elsif comment_body =~ /lgtm/i
       slack.post_message slack_room_id, message(redis, 'looks good')
       self.random!(redis, slack, slack_room_id)

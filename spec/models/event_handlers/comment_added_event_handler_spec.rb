@@ -72,5 +72,14 @@ describe CommentAddedEventHandler do
       handler.execute!(slack, '#cool-channel')
     end
 
+    it 'sends a message when comment body includes "++"' do
+      slack = double(:slack)
+      allow(slack).to receive(:post_message!) { |channel_id, message| message }
+      expect(slack).to receive(:post_message).with('#cool-channel', "[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692|#10>] baxterthehacker: ++\n>>>++ hero!")
+
+      handler = CommentAddedEventHandler.new(generate_comment_payload('++ hero!'))
+      handler.execute!(slack, '#cool-channel')
+    end
+
   end
 end
