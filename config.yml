@@ -10,3 +10,4 @@ channel_map:
   vagrant: '#sysops'
   web: '#engineering'
   web-dancer: '#engineering'
+  ambassador-api: '#engineering'
