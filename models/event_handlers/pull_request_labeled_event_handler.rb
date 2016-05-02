@@ -1,10 +1,11 @@
 require_relative './base_event_handler'
 
 class PullRequestLabeledEventHandler < BaseEventHandler
-  def execute!(redis, slack, slack_room_id)
+  def execute!(redis)
     if label.downcase == 'needs review'
-      slack.post_message(slack_room_id, "[#{repository_link} #{pull_request_link}] #{user_display(redis, target_user_login)}: Needs review\n>>>#{title}")
-      self.random!(redis, slack, slack_room_id)
+      user = UserExperience::User.new(redis, target_user_login)
+      user.increment
+      return "[#{repository_link} #{pull_request_link}] #{user.display}: Needs review\n>>>#{title}"
     end
   end
 

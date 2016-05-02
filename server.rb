@@ -4,8 +4,9 @@ require 'sinatra'
 require 'sinatra/config_file'
 require 'redis'
 require 'json'
-require './lib/slack_api'
+require './lib/slack'
 require './models/event_handler'
+require './models/emoji'
 
 REDISCLOUD_URL   = ENV['REDISCLOUD_URL']
 SLACK_API_KEY    = ENV['SLACK_API_KEY']
@@ -17,40 +18,48 @@ get '/' do
 end
 
 post '/messages' do
-  EMOJI = %w[
-    :parrot: :pacman: :pig: :octopus: :chicken: :crickets: :bee: :bird:
-    :crocodile: :ghost2: :rooster: :best: :turkey: :corgi: :doge:
-  ]
-  event = rand(10)
-  random_emoji = EMOJI[rand(EMOJI.size)]
-  target_user_login = params[:text].gsub(params[:trigger_word], '').strip
-
+  message = params[:text].gsub(params[:trigger_word], '').strip
   case params[:trigger_word]
   when 'battle'
+    redis = Redis.new(:url => REDISCLOUD_URL)
+    redis.lpush("beer", message)
+
     content_type :json
-    {
-      :text => "#{target_user_login}. A wild #{random_emoji} appears. But it got away..."
-    }.to_json
+    { :text => 'Whatever you say!' }.to_json
   end
+end
+
+def slack_channel_name(data)
+  repo_name = data['repository']['name']
+  settings.channel_map[repo_name]
 end
 
 post '/payload' do
   data = JSON.parse(request.body.read)
-  repository_name = data['repository']['name']
-  channel_id = settings.channel_map[repository_name]
-  slack = SlackApi.new(SLACK_API_KEY)
+  channel_name = slack_channel_name(data)
+  channel = Slack::Connection.new(SLACK_API_KEY).channel(channel_name)
   redis = Redis.new(:url => REDISCLOUD_URL)
+  manager = Emoji::Manager.new(redis)
 
   handler = EventHandler.build(data)
-  if handler && channel_id
-    channel_id = settings.channel_map[repository_name]
-    handler.execute!(redis, slack, channel_id)
+  if handler && channel
+    login = handler.target_user_login
+    message = handler.execute!(redis)
+    if message
+      channel.message message
+      encounter = manager.random_encounter(login)
+      unless encounter.nil?
+        channel.message encounter.format(login)
+        channel.message "#{login}'s collection #{manager.server.list(login, 0, 10).join(' ')}"
+      end
+    end
   end
 end
 
 get '/user/:user_id' do
-  redis = Redis.new(:url => REDISCLOUD_URL)
+  manager = Emoji::Manager.new(Redis.new(:url => REDISCLOUD_URL))
   login = params['user_id']
-  captures = redis.lrange("#{login}_pets", 0, 10).join(' ')
+
+  captures = manager.server.list(login, 0, 10).join(' ')
   "#{login}'s collection #{captures}"
 end

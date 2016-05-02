@@ -1,34 +1,31 @@
 require_relative './base_event_handler'
+require './lib/user_experience'
 
 class CommentAddedEventHandler < BaseEventHandler
-  def execute!(redis, slack, slack_room_id)
-    if comment_body =~ /\bp(i|o)ng\b/i
-      slack.post_message slack_room_id, message(redis, 'ping')
-      self.random!(redis, slack, slack_room_id)
-    elsif comment_body =~ /\+1/i
-      slack.post_message slack_room_id, message(redis, '+1')
-      self.random!(redis, slack, slack_room_id)
-    elsif comment_body =~ /\+\+/i
-      slack.post_message slack_room_id, message(redis, '++')
-      self.random!(redis, slack, slack_room_id)
-    elsif comment_body =~ /lgtm/i
-      slack.post_message slack_room_id, message(redis, 'looks good')
-      self.random!(redis, slack, slack_room_id)
-    elsif comment_body =~ /discuss/i
-      slack.post_message slack_room_id, message(redis, 'discuss :muscle:')
-      self.random!(redis, slack, slack_room_id)
-    end
-    self.increment_user(redis, target_user_login)
-  end
-
   def target_user_login
     @data['comment']['user']['login']
   end
 
+  def execute!(redis)
+    user = UserExperience::User.new(redis, target_user_login)
+    user.increment
+    if comment_body =~ /\bp(i|o)ng\b/i
+      return message(user, 'ping')
+    elsif comment_body =~ /\+1/i
+      return message(user, '+1')
+    elsif comment_body =~ /\+\+/i
+      return message(user, '++')
+    elsif comment_body =~ /lgtm/i
+      return message(user, 'looks good')
+    elsif comment_body =~ /discuss/i
+      return message(user, 'discuss :muscle:')
+    end
+  end
+
 private
 
-  def message(redis, label)
-    "[#{repository_link} #{comment_link}] #{user_display(redis, target_user_login)}: #{label}\n>>>#{comment_preview}"
+  def message(user, label)
+    "[#{repository_link} #{comment_link}] #{user.display}: #{label}\n>>>#{comment_preview}"
   end
 
   def comment_body
