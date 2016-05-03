@@ -18,14 +18,36 @@ get '/' do
 end
 
 post '/messages' do
+  redis = Redis.new(:url => REDISCLOUD_URL)
+  manager = Emoji::Manager.new(redis)
+
   message = params[:text].gsub(params[:trigger_word], '').strip
   case params[:trigger_word]
-  when 'battle'
-    redis = Redis.new(:url => REDISCLOUD_URL)
-    redis.lpush("beer", message)
+  when 'pets:'
+    text = "#{message}'s collection #{manager.server.list(message, 0, 10).join(' ')}"
+    content_type :json
+    { :text => text }.to_json
+  when 'beer:'
+    if message.length > 0
+      redis.lpush('beer_list', message)
+    end
+    results = redis.lrange('beer_list', 0, 10).map do |message|
+      ":beer: #{message}"
+    end
+    content_type :json
+    { :text => results.join("\n") }.to_json
+  when 'pay:'
+    content_type :json
+    { :text => "#{params[:user_name]} gave #{message} a :beer:" }.to_json
+  when 'battle:'
+    result = manager.battle(message)
+    text = result.format(message)
+    if result.captured?
+      text = "#{text}\n#{message}'s collection #{manager.server.list(message, 0, 10).join(' ')}"
+    end
 
     content_type :json
-    { :text => 'Whatever you say!' }.to_json
+    { :text => text }.to_json
   end
 end
 
