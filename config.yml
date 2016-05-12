@@ -11,3 +11,4 @@ channel_map:
   web: '#engineering'
   web-dancer: '#engineering'
   ambassador-api: '#engineering'
+  ambassador-web: '#engineering'
