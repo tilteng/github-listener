@@ -3,6 +3,7 @@ channel_map:
   chef: '#sysops'
   tilt-android: '#mobile'
   crowdtilt-ios: '#mobile'
+  calabash: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
   web-nightwatch: '#engineering'
