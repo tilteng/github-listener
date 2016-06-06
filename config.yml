@@ -1,8 +1,8 @@
 channel_map:
   api: '#engineering'
   chef: '#sysops'
-  tilt-android: '#mobile'
-  crowdtilt-ios: '#mobile'
+  android: '#mobile'
+  ios: '#mobile'
   calabash: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
