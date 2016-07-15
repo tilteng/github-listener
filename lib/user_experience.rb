@@ -32,9 +32,10 @@ module UserExperience
 
     def score_icon
       score = redis_experience
-      return '☃'           if @login == 'tildedave'
-      return '☠'           if score <= 0
-      return ':godmode:₉₉' if score >= (TITLES.size * FACTOR)
+      return '☃'                 if @login == 'tildedave'
+      return "#{icon}:bestgoat:" if @login == 'liuhenry'
+      return '☠'                 if score <= 0
+      return ':godmode:₉₉'       if score >= (TITLES.size * FACTOR)
       return "#{icon}#{TITLES[ score / FACTOR ]}"
     end
   end
