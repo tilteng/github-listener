@@ -34,6 +34,7 @@ module UserExperience
       score = redis_experience
       return '☃'                 if @login == 'tildedave'
       return "#{icon}:bestgoat:" if @login == 'liuhenry'
+      return ':doge:₉₉'          if @login == 'rtymchyk'
       return '☠'                 if score <= 0
       return ':godmode:₉₉'       if score >= (TITLES.size * FACTOR)
       return "#{icon}#{TITLES[ score / FACTOR ]}"
