@@ -4,6 +4,7 @@ channel_map:
   android: '#mobile'
   ios: '#mobile'
   calabash: '#mobile'
+  calabash-android: '#mobile'
   tilt-api-style-guide: '#engineering'
   tilt-images: '#engineering'
   web-nightwatch: '#engineering'
