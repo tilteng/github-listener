@@ -3,16 +3,21 @@ require_relative "../../../models/event_handlers/pull_request_labeled_event_hand
 describe PullRequestLabeledEventHandler do
   describe '#execute' do
     it 'does nothing for an arbitary label' do
-      slack = double(:slack)
+      redis = double(:redis)
+
       channel = 'cool channel'
-      handler = PullRequestLabeledEventHandler.new({})
-      expect(handler.execute!(slack, channel)).to eq(nil)
+      handler = PullRequestLabeledEventHandler.new({
+        'label' => {
+            'name' => 'Not a label'
+        }
+      })
+      expect(handler.execute!(redis)).to eq(nil)
     end
 
     it 'sends a message when the label is "Needs review"' do
-      slack = double(:slack)
-      allow(slack).to receive(:post_message!) { |channel_id, message| message }
-      expect(slack).to receive(:post_message).with('#cool-channel', '[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1|#10>] baxterthehacker: Needs review :git:>>>An important pull request')
+      redis = double(:redis)
+      allow(redis).to receive(:get).with('baxterthehacker') { 500 }
+      allow(redis).to receive(:set).with('baxterthehacker', 501)
 
       handler = PullRequestLabeledEventHandler.new({
         'repository' => {
@@ -34,7 +39,7 @@ describe PullRequestLabeledEventHandler do
           'name' => 'Needs review'
         }
       })
-      handler.execute!(slack, '#cool-channel')
+      expect(handler.execute!(redis)).to eq("[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1|#10>] ▁♕₅ baxterthehacker: Needs review\n>>>An important pull request")
     end
   end
 end
