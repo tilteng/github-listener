@@ -5,6 +5,7 @@ GEM
     backports (3.6.6)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    diff-lcs (1.2.5)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     github_api (0.12.3)
@@ -39,6 +40,19 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     redis (3.2.1)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.4)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -60,4 +74,8 @@ DEPENDENCIES
   github_api
   httparty
   redis
+  rspec
   sinatra-contrib
+
+BUNDLED WITH
+   1.11.2
