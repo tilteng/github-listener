@@ -25,7 +25,15 @@ class ReviewSubmittedHandler < BaseEventHandler
   end
 
   def review_link
-    @data['review']['html_url']
+    url = @data['review']['html_url']
+    if @data['issue']
+      number = @data['issue']['number']
+    elsif @data['pull_request']
+      number = @data['pull_request']['number']
+    else
+      number = '???'
+    end
+    "<#{url}|##{number}>"
   end
 
   def message(user, label)

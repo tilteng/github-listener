@@ -49,7 +49,7 @@ describe ReviewSubmittedHandler do
 
       payload = generate_review_submitted_payload('approved', 'this pr lgtm.')
       handler = ReviewSubmittedHandler.new(payload)
-      expect(handler.execute!(redis)).to eq("[<http://github.com/baxterthehacker/public-repo|review:public-repo> https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692] ▁♕₅ baxterthehacker: looks good\n>>>this pr lgtm.")
+      expect(handler.execute!(redis)).to eq("[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692|#10>] ▁♕₅ baxterthehacker: looks good\n>>>this pr lgtm.")
     end
   end
 end
