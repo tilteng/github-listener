@@ -1,4 +1,5 @@
 require_relative './base_event_handler'
+require './lib/user_experience'
 
 class PullRequestLabeledEventHandler < BaseEventHandler
   def execute!(redis)
