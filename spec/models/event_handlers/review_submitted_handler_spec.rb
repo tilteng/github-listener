@@ -51,5 +51,15 @@ describe ReviewSubmittedHandler do
       handler = ReviewSubmittedHandler.new(payload)
       expect(handler.execute!(redis)).to eq("[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692|#10>] ▁♕₅ baxterthehacker: looks good\n>>>this pr lgtm.")
     end
+
+    it 'sends a message when "approved" review with blank body' do
+      redis = double(:redis)
+      allow(redis).to receive(:get).with('baxterthehacker') { 500 }
+      allow(redis).to receive(:set).with('baxterthehacker', 501)
+
+      payload = generate_review_submitted_payload('approved', nil)
+      handler = ReviewSubmittedHandler.new(payload)
+      expect(handler.execute!(redis)).to eq("[<http://github.com/baxterthehacker/public-repo|review:public-repo> <https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692|#10>] ▁♕₅ baxterthehacker: looks good\n>>>+1")
+    end
   end
 end

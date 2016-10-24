@@ -21,7 +21,7 @@ class ReviewSubmittedHandler < BaseEventHandler
   end
 
   def review_preview
-    @data['review']['body'].slice(0...255)
+    (@data['review']['body'] || '+1').slice(0...255)
   end
 
   def review_link
